@@ -16,6 +16,12 @@ app.use(cookieParser())
 
 
 //there are four fields
-// (err, req, res, next)
+// (err, req, res, next) ------ all the error requests are handeled here ---- global error handeler
+app.use((err,req,res,next)=>{
+    res.status(err.statusCode||500).json({
+        success: false,
+        message: err.message||"Internal Server Error",
+    })
+})
 
 export {app}  
