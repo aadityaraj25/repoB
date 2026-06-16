@@ -15,6 +15,8 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 
+
+
 //there are four fields
 // (err, req, res, next) ------ all the error requests are handeled here ---- global error handeler
 app.use((err,req,res,next)=>{
@@ -24,4 +26,10 @@ app.use((err,req,res,next)=>{
     })
 })
 
-export {app}  
+// routes import 
+import userRouter from "./routes/user.routes.js"
+
+// routes declaration
+app.use("/api/v1/users",userRouter)
+
+export {app}   
