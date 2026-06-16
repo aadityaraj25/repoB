@@ -16,6 +16,8 @@ const registerUser = asyncHandler(async(req,res)=>{
     // remove password and refresh token field from response
     // check for user creation
     // return response -- if user is created or not
+
+    // console.log("req.body : ",req.body) --- debugging purpose only
     
     const {fullName,email,username,password} = req.body
     // console.log("email : ",email)
@@ -36,7 +38,7 @@ const registerUser = asyncHandler(async(req,res)=>{
         throw new ApiError(400,"User with email or username already exist")
     }
 
-
+    // console.log("req files: ",req.files) --- debugging purpose only
     // handle files like avatar image and coverImage
     // multer gives access to req.files
     // avatar image
@@ -44,7 +46,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     console.log(avatarLocalPath)
 
     // cover Image
-    const coverLocalPath = req.files?.coverImage[0]?.path
+    const coverLocalPath = req.files?.coverImage?.[0]?.path
     console.log(coverLocalPath)
 
     if(!avatarLocalPath){
@@ -52,7 +54,8 @@ const registerUser = asyncHandler(async(req,res)=>{
     }
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
-    const coverImage = await uploadOnCloudinary(coverLocalPath)
+    // const coverImage = await uploadOnCloudinary(coverLocalPath) -- vulnurable if cover image is not present
+    const coverImage = coverLocalPath?await uploadOnCloudinary(coverLocalPath) : null
 
     if(!avatar){
         throw new ApiError(400,"Avatar file is required")
@@ -60,8 +63,8 @@ const registerUser = asyncHandler(async(req,res)=>{
 
     const user =  await User.create({
         fullName,
-        avatar: avatar.url,
-        coverImage: coverImage?.url || "",
+        avatar: avatar.secure_url,
+        coverImage: coverImage?.secure_url || "",
         email,
         password,
         username: username.toLowerCase(),
@@ -75,8 +78,8 @@ const registerUser = asyncHandler(async(req,res)=>{
         throw new ApiError(500,"Something went wrong while reggistering the user")
     }
 
-    return res.status(200).json(
-        new ApiResponse(200,createdUser,"User Created Successfullly")
+    return res.status(201).json(
+        new ApiResponse(201,createdUser,"User Created Successfullly")
     )
 
 })
