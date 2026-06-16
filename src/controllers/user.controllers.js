@@ -18,7 +18,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     // return response -- if user is created or not
     
     const {fullName,email,username,password} = req.body
-    console.log("email : ",email)
+    // console.log("email : ",email)
 
     // if(fullName==="") throw new ApiError(4000,"full name is required")
 
